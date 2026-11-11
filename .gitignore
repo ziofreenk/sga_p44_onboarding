@@ -1,0 +1,12 @@
+# Materiali di progetto e dati locali (R-01): mai su git
+materiali/
+data/
+output/
+*.db
+*.eml
+.env
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
