@@ -57,13 +57,15 @@ Query: `capability`, `inviteeIdentifier.type`, `inviteeIdentifier.value`, `pageN
 ## 3. Errore standard (ApiError) [da verificare]
 `{"httpStatusCode": 400, "httpMessage": "Bad Request", "errorMessage": "...", "errors": [], "supportReferenceId": "..."}`
 
-## 4. Fuori dalle API pubbliche P44 (simulate con endpoint `/_sim/*`, NON P44)
-| Passo | Su P44 reale avviene… | Nel mock |
+## 4. Perimetro e simulazione (decisione 11/11/2026)
+Perimetro: **invio inviti + monitoraggio stato**. L'integrazione del vettore (registrazione NMC, GPS, mezzi) è **fuori perimetro**.
+
+| Aspetto | Su P44 reale | Nel mock |
 |---|---|---|
 | Mail di invito al vettore | inviata da P44 | file `.eml` in `output/mail/` |
-| Registrazione / accettazione | il vettore clicca il link e si registra su NMC | `POST /_sim/invitations/{id}/accept` / `decline` |
-| Connessione GPS | tab ELD/GPS in NMC | `POST /_sim/carriers/{vat}/gps` |
-| Inserimento mezzi (targhe) | tab Fleet in NMC + License Plate Check | `POST /_sim/carriers/{vat}/vehicles` → ACTIVE/INACTIVE/UNKNOWN |
-| Scadenza invito | piattaforma P44 | `POST /_sim/clock` (orologio virtuale) |
+| Evoluzione stato invito | azione del vettore / scadenza piattaforma | automatica per scenario del vettore + orologio virtuale |
+| Sollecito | mail FERCAM (Ufficio Vettori, francesco.orlando@fercam.com) | file `.eml` generato dall'orchestratore |
 
-API pubbliche correlate non implementate in fase 1: `capacityprovideraccounts`, `tl/connected-capacity`, `assets/tracking`.
+Endpoint extra del mock, **non P44**, usati solo per la demo: `POST /_sim/clock` (avanza l'orologio virtuale), `POST /_sim/reset`.
+
+API pubbliche correlate non implementate: `capacityprovideraccounts`, `tl/connected-capacity`, `assets/tracking`.
