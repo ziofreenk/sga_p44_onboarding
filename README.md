@@ -21,5 +21,17 @@ invito, sollecito, registrazione avvenuta, connessione GPS e inserimento mezzi,
 | `tests/` | Test automatici (`unittest`) |
 | `materiali/` | Materiale locale non versionato |
 
+## Avvio rapido (Windows, Python 3.12 portable/utente)
+```bat
+cd C:\Tools\sga_p44_onboarding
+rem credenziali del mock (facoltative: senza, valori demo fercam-poc / fercam-poc-secret)
+set P44_MOCK_CLIENT_ID=fercam-poc
+set P44_MOCK_CLIENT_SECRET=fercam-poc-secret
+python -m src.p44_mock --port 8044
+rem test automatici
+python -m unittest discover -s tests -t . -v
+```
+File generati (esclusi da git): `data/p44_mock.db` (sqlite, pochi KB), `output/mail/*.eml`. RAM del mock: ~20-30 MB.
+
 ## Stato
-Fase 0 – setup. Vedi Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Vedi `docs/STATO.md` e Notion per scaletta e decisioni.

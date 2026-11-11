@@ -69,3 +69,36 @@ Perimetro: **invio inviti + monitoraggio stato**. L'integrazione del vettore (re
 Endpoint extra del mock, **non P44**, usati solo per la demo: `POST /_sim/clock` (avanza l'orologio virtuale), `POST /_sim/reset`.
 
 API pubbliche correlate non implementate: `capacityprovideraccounts`, `tl/connected-capacity`, `assets/tracking`.
+
+## 5. Implementazione del mock (`src/p44_mock/`, attività #2 e #3)
+Comportamenti del mock dove P44 non è documentato (scelte del POC, da confermare col CSM P44):
+- `organization.name`, `contacts[].email` e `contacts[].givenName` sempre obbligatori (il vettore simulato non ha mai un account P44).
+- `contacts[].locale` assente → valorizzato `en-US` nella risposta.
+- **409**: esiste già un invito `IN_PROGRESS` con la stessa capability e almeno un identificativo uguale (confronto case-insensitive, spazi ignorati). Dopo `ACCEPTED/DECLINED/EXPIRED` un nuovo POST è ammesso (nuovo tentativo).
+- La risposta contiene **solo** i campi del contratto (nessun `id`): il monitoraggio avviene con `GET` filtrato per `inviteeIdentifier.value`.
+- `errors[]` dell'ApiError: oggetti `{"message": "..."}`.
+- Token: scadenza sul tempo **reale** (12 h), non sull'orologio virtuale.
+
+### Scenari dei vettori (giorni dalla creazione dell'invito)
+| Scenario | 1° invito | Inviti successivi |
+|---|---|---|
+| `ACCETTA_SUBITO` | ACCEPTED +1 | idem |
+| `ACCETTA_DOPO_SOLLECITO_1` | ACCEPTED +3 (dopo sollecito +2) | idem |
+| `ACCETTA_DOPO_SOLLECITO_2` | ACCEPTED +6 (dopo sollecito +5) | idem |
+| `RIFIUTA` | DECLINED +4 | idem |
+| `NESSUNA_RISPOSTA` | EXPIRED +30 | idem |
+| `SCADE_POI_ACCETTA` | EXPIRED +30 | ACCEPTED +2 |
+
+Assegnazione: mappa esplicita `{"<P.IVA>": "<SCENARIO>"}` (file `--scenari` all'avvio o body di `/_sim/reset`), altrimenti
+deterministica da SHA-256 del valore identificativo (stesso vettore → stesso scenario).
+La transizione è applicata in modo "pigro" a ogni chiamata; `lastModifiedDateTime` = istante virtuale della transizione.
+
+### Endpoint di simulazione (non P44, senza autenticazione, solo 127.0.0.1)
+| Endpoint | Body | Effetto |
+|---|---|---|
+| `GET /_sim/clock` | – | `{"now": "..."}` ora virtuale |
+| `POST /_sim/clock` | `{"advanceDays": n, "advanceHours": n}` oppure `{"set": "ISO-8601"}` | avanza / imposta l'orologio virtuale (avanzamento negativo → 400) |
+| `POST /_sim/reset` | opzionale `{"now": "ISO-8601", "scenari": {...}}` | svuota gli inviti, riporta l'orologio, ripristina gli scenari di base + quelli passati |
+| `GET /_sim/scenari` | – | elenco scenari e tempi |
+
+L'orologio virtuale scorre col tempo reale a partire dall'ultima impostazione ed è persistito in sqlite (`data/p44_mock.db`).
