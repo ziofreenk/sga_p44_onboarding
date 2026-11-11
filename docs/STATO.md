@@ -11,10 +11,13 @@ Ultimo aggiornamento: 2026-11-11, fine sessione 2
   paginazione, filtri, 409 su invito IN_PROGRESS duplicato, ApiError, mail di invito `.eml` in `output/mail/`
 - #3 Evoluzione stati per scenario (6 scenari, EXPIRED a 30 gg, re-invito) + `/_sim/clock`, `/_sim/reset`, `/_sim/scenari`
 - 31 test `unittest` verdi (`python -m unittest discover -s tests -t . -v`), dettagli in `docs/p44-api-contract.md` §5
+- #4 Query SGA `sql/01_vettori_inviti_p44.sql`: società 1, reparti FMI, ultimi 3 mesi, POC tipo 01 (default
+  "Ufficio Traffico"), vettori senza P.IVA scartati. Conteggio 11/11/2026: **773 vettori invitabili**, 16.776 viaggi
+  (403 con nominativo di default). Esclusi: 4 non attivi, 61 bloccati, 26 FERCAM, 257 senza P.IVA
 
 ## Prossimi passi
-1. #4 Query SGA vettori/contatti (con MCP sga-db, sola lettura) → tracciato CSV
-2. #5 Generatore dati fittizi con lo stesso tracciato (assegnare P.IVA fittizie agli scenari del mock)
+1. #5 Generatore dati fittizi con il tracciato della query #4 (assegnare P.IVA fittizie agli scenari del mock)
+2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git)
 3. #6 Orchestratore: inviti, monitoraggio (GET per P.IVA), solleciti +2/+5 gg, re-invito su EXPIRED
 4. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux
 
@@ -27,4 +30,5 @@ Ultimo aggiornamento: 2026-11-11, fine sessione 2
 - Perimetro: invio inviti + monitoraggio stato. Integrazione API del vettore esclusa
 - Sollecito: mail FERCAM al referente del vettore a +2 e +5 giorni dall'invito. EXPIRED → nuovo invito
 - Referente Ufficio Vettori POC: Francesco Orlando, francesco.orlando@fercam.com (mittente dei solleciti)
+- Estrazione vettori: vedi decisioni "Dati SGA" su Notion (perimetro FMI 3 mesi, POC default, no P.IVA = scarto)
 - Mock: stati inviti evolvono da soli per scenario + orologio virtuale; EXPIRED dopo 30 giorni
