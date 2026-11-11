@@ -20,5 +20,6 @@ Ultimo aggiornamento: 2026-11-11, fine sessione 1
 
 ## Decisioni chiave (dettaglio su Notion)
 - Perimetro: invio inviti + monitoraggio stato. Integrazione API del vettore esclusa
-- Sollecito: mail FERCAM al referente del vettore (+5/+10 gg, proposta). EXPIRED → nuovo invito
+- Sollecito: mail FERCAM al referente del vettore a +2 e +5 giorni dall'invito. EXPIRED → nuovo invito
 - Referente Ufficio Vettori POC: Francesco Orlando, francesco.orlando@fercam.com (mittente dei solleciti)
+- Mock: stati inviti evolvono da soli per scenario + orologio virtuale; EXPIRED dopo 30 giorni
