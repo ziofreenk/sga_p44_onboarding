@@ -33,11 +33,30 @@ python -m src.onboarding.genera_dati_fittizi --data-rif 2026-11-12
 python -m src.p44_mock --port 8044 --scenari data\scenari.json
 rem orchestratore: un ciclo (in demo con ora virtuale del mock); avanzare i giorni con POST /_sim/clock
 python -m src.onboarding.orchestratore --csv data\vettori_fittizi.csv --orologio mock
-rem test automatici
+rem report KPI/anomalie sugli export dell'orchestratore -> output\report\
+python -m src.onboarding.report_kpi --input output
+rem test automatici (79, ~1 minuto: include una demo di 95 giorni virtuali)
 python -m unittest discover -s tests -t . -v
 ```
+
+## Demo completa (un comando)
+```bat
+python -m src.onboarding.demo --giorni 95 --data-rif 2026-11-12
+```
+Genera i dati fittizi, avvia il mock in-process su una porta libera (solo 127.0.0.1), esegue un ciclo
+dell'orchestratore per ogni giorno virtuale e produce il report finale. Ogni run scrive in una cartella nuova
+`output\demo\run_AAAAMMGG_hhmmss\` (nessun file sovrascritto). Esito atteso con i default (30 vettori + 2 KO):
+20 accettati (66,7%), 5 rifiutati, 5 a tentativi esauriti, 35 solleciti 1 + 25 solleciti 2, 15 re-inviti.
+Opzioni: `--vettori`, `--ko`, `--seed`, `--cartella`, `--quiet`. RAM < 50 MB, disco ~1 MB per run.
+
+Report (`report\` del run o di `--output`):
+| File | Contenuto |
+|---|---|
+| `report_kpi.md` | Sintesi, funnel, KPI per area (accettazione, efficacia solleciti, tempi di risposta, solleciti, inviti, esecuzione), anomalie con azione suggerita |
+| `kpi.csv` | `area;kpi;valore;unita` (UTF-8 BOM, decimali con virgola per Excel) |
+| `anomalie.csv` | `gravita;tipo;vat;codice_vettore;ragione_sociale;dettaglio;azione_suggerita` |
 File generati (esclusi da git): `data/vettori_fittizi.csv`, `data/scenari.json`, `data/p44_mock.db` e `data/orchestratore.db` (sqlite, pochi KB),
 `output/mail/*.eml` (inviti), `output/solleciti/*.eml`, `output/eventi.csv`, `output/stato_vettori.csv`. RAM del mock: ~20-30 MB.
 
 ## Stato
-Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Fase 4 – report KPI/anomalie e demo (#7) completati. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.

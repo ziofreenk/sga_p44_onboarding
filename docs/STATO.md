@@ -1,6 +1,6 @@
 # Stato progetto e punto di ripresa
 
-Ultimo aggiornamento: 2026-11-12, sessione 4
+Ultimo aggiornamento: 2026-11-12, sessione 5
 
 ## Fatto
 - Struttura del repo, README, `.gitignore` (`materiali/`, `data/`, `output/` esclusi)
@@ -35,13 +35,27 @@ Ultimo aggiornamento: 2026-11-12, sessione 4
 - 63 test `unittest` verdi (+12 orchestratore: 36 giorni virtuali sui 6 scenari, tempi solleciti, idempotenza,
   ritardo, tentativi esauriti, 409, credenziali errate, mail). Prova end-to-end CLI con mock su porta 8045 OK
 
+- #7 Report KPI/anomalie (`src/onboarding/report_kpi.py`): legge SOLO `eventi.csv` + `stato_vettori.csv` (vale anche
+  per run reali). KPI: perimetro e scarti per motivo; funnel (accettati, rifiutati, in corso, scaduti in attesa,
+  tentativi esauriti, annullati); tassi di accettazione (totale, 1° invito, su re-invito), risposta, rifiuto; efficacia
+  solleciti (accettati senza sollecito / dopo S1 / dopo S2 / su re-invito); tempi di accettazione e rifiuto
+  (media/mediana/min/max, dall'invito del tentativo e dal primo invito, con lastModifiedDateTime P44, fallback data ciclo);
+  solleciti S1/S2/S2 senza S1/medi per accettato; inviti, re-inviti, EXPIRED, 409 adottati; cicli e errori.
+  Anomalie con gravità e azione: TENTATIVI_ESAURITI, ERRORE_API, CICLO_INTERROTTO (ALTA); RIFIUTATO, SCARTO_CSV,
+  SOLLECITO_2_MANCANTE, NON_CONTROLLATO (MEDIA); ANNULLATO, SOLLECITO_1_SALTATO (BASSA).
+  Output `report_kpi.md`, `kpi.csv`, `anomalie.csv` (`;`, UTF-8 BOM, decimali con virgola).
+  Comando: `python -m src.onboarding.report_kpi --input output`
+- #7 Demo (`src/onboarding/demo.py`): dati fittizi + mock in-process su porta libera + 1 ciclo/giorno alle 07:00 UTC
+  virtuali per 95 giorni (default: 3 scadenze da 30 gg) + report. Cartella nuova per run `output/demo/run_<timestamp>`.
+  Esito (seed 44, 30+2): 20 accettati 66,7%, 5 rifiutati, 5 esauriti, S1 35, S2 25, re-inviti 15, 96 cicli, 12 anomalie.
+  Comando: `python -m src.onboarding.demo --data-rif 2026-11-12` (~35 s nella VM Linux)
+- 79 test `unittest` verdi (+12 report su eventi costruiti a mano, +4 demo end-to-end 95 giorni)
+
 ## Prossimi passi
-1. #7 Report KPI/anomalie (da `eventi.csv`/`stato_vettori.csv`: funnel inviti→accettati, tempi di accettazione,
-   solleciti per accettazione, rifiuti, tentativi esauriti, errori) + script demo 30+ giorni virtuali (avanza `/_sim/clock`
-   e lancia un ciclo al giorno) + test
+1. #8 Collaudo sul PC di Francesco (Python 3.12 Windows): test + demo, revisione del report con il referente FM Italy
 2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
    verificare che il formato di ULTIMO_VIAGGIO coincida con quello del generatore (`AAAA-MM-GG hh:mm:ss`)
-3. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux
+3. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux (incluso nel #8)
 
 ## Convenzioni
 - Python 3.12, solo libreria standard. Commenti in italiano
@@ -57,3 +71,5 @@ Ultimo aggiornamento: 2026-11-12, sessione 4
 - Orchestratore (#6, approvate da Francesco il 12/11/2026): max 3 tentativi di invito; DECLINED non re-invitato (gestione manuale);
   solleciti a giorni di calendario UTC; fonte di verità degli inviti = P44 (il registro locale tiene solo solleciti,
   ultimo stato visto ed eventi)
+- Report e demo (#7, approvati da Francesco il 12/11/2026): demo 95 giorni di default; report Markdown + kpi.csv +
+  anomalie.csv; tempi misurati sia dal tentativo sia dal primo invito
