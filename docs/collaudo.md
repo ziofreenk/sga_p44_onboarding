@@ -58,7 +58,8 @@ Esito in `esito.md` (SUPERATO / NON SUPERATO). Exit code dello script: 0 = super
 File da mostrare: `output\collaudo\<timestamp>\demo\report\report_kpi.md` (+ `kpi.csv`, `anomalie.csv` in Excel)
 e due mail di esempio da `demo\solleciti\` (una IT, una EN).
 
-Domande da chiudere (ogni risposta va nel Registro decisioni su Notion):
+Domande da chiudere (ogni risposta va nel Registro decisioni su Notion).
+**Esito 12/11/2026**: referente Ufficio Vettori per il POC = Francesco Orlando; tutti i valori attuali R1-R8 confermati (decisione 19).
 
 | # | Tema | Domanda per FM Italy | Valore attuale nel POC |
 |---|---|---|---|
@@ -78,12 +79,11 @@ Domande da chiudere (ogni risposta va nel Registro decisioni su Notion):
 | 8.1 | Correzioni preventive Windows + script di collaudo | Claude (PM/Dev) | 12/11/2026 | 12/11/2026 | 0,5 g | #7 | Completata | proxy, getfqdn, `scripts\collaudo.ps1` |
 | 8.2 | Esecuzione `collaudo.ps1` sul PC Windows | Francesco | 12/11/2026 | 12/11/2026 | 0,5 g | 8.1 | Completata | SUPERATO: Python 3.12.10, 84 test OK, demo e CLI OK |
 | 8.3 | Analisi esiti e correzioni | Claude (PM/Dev) | 12/11/2026 | 12/11/2026 | - | 8.2 | Completata | nessuna correzione necessaria |
-| 8.4 | Individuazione referente FM Italy | Francesco | 13/11/2026 | 18/11/2026 | - | - | Da fare | prerequisito di 8.5 |
-| 8.5 | Revisione report e domande R1-R8 | Francesco + Referente FM Italy | 18/11/2026 | 20/11/2026 | 1 g | 8.2, 8.4 | Da fare | risposte nel Registro decisioni |
-| 8.6 | Recepimento modifiche richieste | Claude (PM/Dev) | 20/11/2026 | 24/11/2026 | 1-2 g | 8.5 | Da fare | **M5** collaudo chiuso |
+| 8.4 | Individuazione referente FM Italy | Francesco | 12/11/2026 | 12/11/2026 | - | - | Completata | per il POC: Francesco Orlando (decisione 19) |
+| 8.5 | Revisione report e domande R1-R8 | Francesco + Referente FM Italy | 12/11/2026 | 12/11/2026 | - | 8.2, 8.4 | Completata | valori attuali confermati (decisione 19) |
+| 8.6 | Recepimento modifiche richieste | Claude (PM/Dev) | 12/11/2026 | 12/11/2026 | - | 8.5 | Completata | nessuna modifica richiesta - **M5** collaudo chiuso |
 
-Rischi: referente FM Italy non ancora individuato (8.4 blocca 8.5); policy aziendali su PowerShell/antivirus
-(mitigazione: comandi Python manuali sotto).
+Rischi residui: policy aziendali su PowerShell/antivirus (mitigazione: comandi Python manuali sotto).
 
 ## Esito esecuzione 8.2 (12/11/2026 09:45)
 | Passo | Esito | Dettaglio |

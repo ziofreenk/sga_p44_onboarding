@@ -67,4 +67,4 @@ Ambiente + test + demo 95 giorni + prova CLI su porta reale; esito in `output\co
 Procedura, errori tipici e checklist di revisione del report con FM Italy: `docs/collaudo.md`.
 
 ## Stato
-Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Fase 4 – report KPI/anomalie e demo (#7) completati. Fase 5 – collaudo (#8) in corso. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Fase 4 – report KPI/anomalie e demo (#7) completati. Fase 5 – collaudo su Windows (#8) completato: POC concluso (M5). Vedi `docs/STATO.md` e Notion per scaletta e decisioni.

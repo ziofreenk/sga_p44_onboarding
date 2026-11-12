@@ -67,10 +67,12 @@ Ultimo aggiornamento: 2026-11-12, sessione 6
   (resta coperta da `tests/test_rete_locale.py`). Esito in `output\collaudo\20261112_094547\`
 
 ## Prossimi passi
-1. #8 resto: individuare il referente FM Italy (8.4) e rivedere con lui il report demo
-   (`output\collaudo\20261112_094547\demo\report\`) con le domande R1-R8 di `docs/collaudo.md` (8.5)
-2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
+Scaletta #1-#8 completata (M5, 12/11/2026): POC concluso. Revisione report: referente Ufficio Vettori POC = Francesco,
+valori attuali R1-R8 confermati (decisione 19 su Notion). Passi facoltativi successivi:
+1. Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
    verificare che il formato di ULTIMO_VIAGGIO coincida con quello del generatore (`AAAA-MM-GG hh:mm:ss`)
+   e provare l'orchestratore sul CSV reale contro il mock
+2. Credenziali sandbox P44 EU dal CSM project44 e conferma schemi API / tempi di EXPIRED
 
 ## Convenzioni
 - Python 3.12, solo libreria standard. Commenti in italiano
