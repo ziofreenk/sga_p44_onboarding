@@ -28,10 +28,13 @@ rem credenziali del mock (facoltative: senza, valori demo fercam-poc / fercam-po
 set P44_MOCK_CLIENT_ID=fercam-poc
 set P44_MOCK_CLIENT_SECRET=fercam-poc-secret
 python -m src.p44_mock --port 8044
+rem dati fittizi (vettori + scenari del mock), poi mock con scenari forzati
+python -m src.onboarding.genera_dati_fittizi --data-rif 2026-11-12
+python -m src.p44_mock --port 8044 --scenari data\scenari.json
 rem test automatici
 python -m unittest discover -s tests -t . -v
 ```
-File generati (esclusi da git): `data/p44_mock.db` (sqlite, pochi KB), `output/mail/*.eml`. RAM del mock: ~20-30 MB.
+File generati (esclusi da git): `data/vettori_fittizi.csv`, `data/scenari.json`, `data/p44_mock.db` (sqlite, pochi KB), `output/mail/*.eml`. RAM del mock: ~20-30 MB.
 
 ## Stato
-Fase 1 – mock P44 completato (#2, #3). Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.

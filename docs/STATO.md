@@ -1,6 +1,6 @@
 # Stato progetto e punto di ripresa
 
-Ultimo aggiornamento: 2026-11-11, fine sessione 2
+Ultimo aggiornamento: 2026-11-12, sessione 3
 
 ## Fatto
 - Struttura del repo, README, `.gitignore` (`materiali/`, `data/`, `output/` esclusi)
@@ -14,12 +14,20 @@ Ultimo aggiornamento: 2026-11-11, fine sessione 2
 - #4 Query SGA `sql/01_vettori_inviti_p44.sql`: società 1, reparti FMI, ultimi 3 mesi, POC tipo 01 (default
   "Ufficio Traffico"), vettori senza P.IVA scartati. Conteggio 11/11/2026: **773 vettori invitabili**, 16.776 viaggi
   (403 con nominativo di default). Esclusi: 4 non attivi, 61 bloccati, 26 FERCAM, 257 senza P.IVA
+- #5 Generatore dati fittizi (`src/onboarding/genera_dati_fittizi.py`, tracciato in `src/onboarding/tracciato.py`):
+  CSV con le 19 colonne della query #4 (`;`, UTF-8 BOM, ordinato come la query) + `scenari.json` {VAT_P44: scenario}
+  per `python -m src.p44_mock --scenari`. Default 30 vettori OK (5 per ciascuno dei 6 scenari, minimo 6) + 2 KO_MANCA_EMAIL
+  (esclusi da scenari.json); P.IVA IT con cifra di controllo valida, 3 esteri (DE/AT/PL), ~metà con "Ufficio Traffico",
+  e-mail `*.test`, telefoni `+xx000...`, codici vettore 900001+. Riproducibile con `--seed` e `--data-rif`.
+  Comando: `python -m src.onboarding.genera_dati_fittizi --data-rif 2026-11-12` → `data/vettori_fittizi.csv`, `data/scenari.json`
+- 51 test `unittest` verdi (31 mock + 20 generatore, incluso caricamento di scenari.json nello Store del mock)
 
 ## Prossimi passi
-1. #5 Generatore dati fittizi con il tracciato della query #4 (assegnare P.IVA fittizie agli scenari del mock)
-2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git)
-3. #6 Orchestratore: inviti, monitoraggio (GET per P.IVA), solleciti +2/+5 gg, re-invito su EXPIRED
-4. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux
+1. #6 Orchestratore: legge il CSV (solo ESITO_CONTROLLO = OK, usa `tracciato.py`), inviti con identificativo VAT = VAT_P44,
+   monitoraggio (GET per `inviteeIdentifier.value`), solleciti +2/+5 gg (.eml), re-invito su EXPIRED, log eventi
+2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
+   verificare che il formato di ULTIMO_VIAGGIO coincida con quello del generatore (`AAAA-MM-GG hh:mm:ss`)
+3. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux
 
 ## Convenzioni
 - Python 3.12, solo libreria standard. Commenti in italiano
