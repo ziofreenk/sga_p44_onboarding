@@ -31,10 +31,13 @@ python -m src.p44_mock --port 8044
 rem dati fittizi (vettori + scenari del mock), poi mock con scenari forzati
 python -m src.onboarding.genera_dati_fittizi --data-rif 2026-11-12
 python -m src.p44_mock --port 8044 --scenari data\scenari.json
+rem orchestratore: un ciclo (in demo con ora virtuale del mock); avanzare i giorni con POST /_sim/clock
+python -m src.onboarding.orchestratore --csv data\vettori_fittizi.csv --orologio mock
 rem test automatici
 python -m unittest discover -s tests -t . -v
 ```
-File generati (esclusi da git): `data/vettori_fittizi.csv`, `data/scenari.json`, `data/p44_mock.db` (sqlite, pochi KB), `output/mail/*.eml`. RAM del mock: ~20-30 MB.
+File generati (esclusi da git): `data/vettori_fittizi.csv`, `data/scenari.json`, `data/p44_mock.db` e `data/orchestratore.db` (sqlite, pochi KB),
+`output/mail/*.eml` (inviti), `output/solleciti/*.eml`, `output/eventi.csv`, `output/stato_vettori.csv`. RAM del mock: ~20-30 MB.
 
 ## Stato
-Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
