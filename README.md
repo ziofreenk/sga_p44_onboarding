@@ -17,7 +17,8 @@ invito, sollecito, registrazione avvenuta, connessione GPS e inserimento mezzi,
 | `src/p44_mock/` | Server mock P44 (OAuth2 token, Network Invitations) + endpoint di simulazione `/_sim/*` |
 | `src/onboarding/` | Orchestratore FERCAM: lettura vettori, inviti, solleciti, monitoraggio, report |
 | `sql/` | Query T-SQL su SGA |
-| `docs/` | Contratto API P44, note tecniche |
+| `docs/` | Contratto API P44, stato, procedura di collaudo |
+| `scripts/` | `collaudo.ps1`: collaudo completo su Windows (#8) |
 | `tests/` | Test automatici (`unittest`) |
 | `materiali/` | Materiale locale non versionato |
 
@@ -35,7 +36,7 @@ rem orchestratore: un ciclo (in demo con ora virtuale del mock); avanzare i gior
 python -m src.onboarding.orchestratore --csv data\vettori_fittizi.csv --orologio mock
 rem report KPI/anomalie sugli export dell'orchestratore -> output\report\
 python -m src.onboarding.report_kpi --input output
-rem test automatici (79, ~1 minuto: include una demo di 95 giorni virtuali)
+rem test automatici (84, ~1 minuto: include una demo di 95 giorni virtuali)
 python -m unittest discover -s tests -t . -v
 ```
 
@@ -58,5 +59,12 @@ Report (`report\` del run o di `--output`):
 File generati (esclusi da git): `data/vettori_fittizi.csv`, `data/scenari.json`, `data/p44_mock.db` e `data/orchestratore.db` (sqlite, pochi KB),
 `output/mail/*.eml` (inviti), `output/solleciti/*.eml`, `output/eventi.csv`, `output/stato_vettori.csv`. RAM del mock: ~20-30 MB.
 
+## Collaudo su Windows (#8)
+```bat
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\collaudo.ps1 [-Python C:\...\python.exe] [-Porta 8044]
+```
+Ambiente + test + demo 95 giorni + prova CLI su porta reale; esito in `output\collaudo\<timestamp>\esito.md`.
+Procedura, errori tipici e checklist di revisione del report con FM Italy: `docs/collaudo.md`.
+
 ## Stato
-Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Fase 4 – report KPI/anomalie e demo (#7) completati. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.
+Fase 1 – mock P44 completato (#2, #3). Fase 2 – query SGA (#4) e dati fittizi (#5) completati. Fase 3 – orchestratore (#6) completato. Fase 4 – report KPI/anomalie e demo (#7) completati. Fase 5 – collaudo (#8) in corso. Vedi `docs/STATO.md` e Notion per scaletta e decisioni.

@@ -18,6 +18,7 @@ import time
 import uuid
 from datetime import timedelta
 from http import HTTPStatus
+import socketserver
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
@@ -49,6 +50,12 @@ class ErroreApi(Exception):
 
 class MockP44Server(ThreadingHTTPServer):
     daemon_threads = True
+
+    def server_bind(self):
+        # Come HTTPServer.server_bind ma senza socket.getfqdn(): su Windows con DNS aziendale
+        # la risoluzione inversa può costare secondi a ogni avvio del mock (e a ogni test).
+        socketserver.TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
 
     def __init__(self, indirizzo, store: Store, client_id: str, client_secret: str,
                  cartella_mail=None, invitante="FERCAM", log=True):

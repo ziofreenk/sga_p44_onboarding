@@ -18,6 +18,24 @@ PATH_INVITI = "/services/invitation/v1/invitations"
 CAPABILITY = "TRUCKLOAD_ASSET_TRACKING"
 PAGE_SIZE_MAX = 25
 
+# Opener senza proxy per gli indirizzi di loopback (mock locale). Su Windows urllib legge il proxy
+# aziendale dal registro e non lo bypassa per 127.0.0.1: le chiamate al mock finirebbero sul proxy.
+_OPENER_SENZA_PROXY = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+
+def e_loopback(url: str) -> bool:
+    """True se l'URL punta alla macchina locale (localhost, 127.x.x.x, ::1)."""
+    host = (urllib.parse.urlsplit(url).hostname or "").lower()
+    return host in ("localhost", "::1") or host.startswith("127.")
+
+
+def apri(req, timeout: float):
+    """urlopen che salta il proxy di sistema per il mock locale; per P44 reale usa il proxy di sistema."""
+    url = req.full_url if isinstance(req, urllib.request.Request) else req
+    if e_loopback(url):
+        return _OPENER_SENZA_PROXY.open(req, timeout=timeout)
+    return urllib.request.urlopen(req, timeout=timeout)
+
 
 class ErroreP44(Exception):
     """Errore HTTP restituito da P44 (corpo ApiError, se presente, in .dettaglio)."""
@@ -51,7 +69,7 @@ class ClientP44:
         for n in range(self.tentativi_rete):
             req = urllib.request.Request(url, data=corpo, headers=h, method=metodo)
             try:
-                with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                with apri(req, self.timeout) as r:
                     raw = r.read()
                     return r.status, (json.loads(raw) if raw else None)
             except urllib.error.HTTPError as e:
@@ -134,5 +152,5 @@ class OrologioMock:
 
     def adesso(self):
         from .tempo import parse_iso
-        with urllib.request.urlopen(self.url, timeout=self.timeout) as r:
+        with apri(self.url, self.timeout) as r:
             return parse_iso(json.loads(r.read())["now"])

@@ -1,6 +1,6 @@
 # Stato progetto e punto di ripresa
 
-Ultimo aggiornamento: 2026-11-12, sessione 5
+Ultimo aggiornamento: 2026-11-12, sessione 6
 
 ## Fatto
 - Struttura del repo, README, `.gitignore` (`materiali/`, `data/`, `output/` esclusi)
@@ -50,12 +50,23 @@ Ultimo aggiornamento: 2026-11-12, sessione 5
   Esito (seed 44, 30+2): 20 accettati 66,7%, 5 rifiutati, 5 esauriti, S1 35, S2 25, re-inviti 15, 96 cicli, 12 anomalie.
   Comando: `python -m src.onboarding.demo --data-rif 2026-11-12` (~35 s nella VM Linux)
 - 79 test `unittest` verdi (+12 report su eventi costruiti a mano, +4 demo end-to-end 95 giorni)
+- #8 (parte Claude, sessione 6): correzioni preventive Windows + kit di collaudo
+  - `p44_client.apri()`: per indirizzi loopback (mock) opener senza proxy; su Windows urllib userebbe il proxy
+    aziendale del registro anche per 127.0.0.1. P44 reale usa ancora il proxy di sistema. Usato da client, orologio mock, demo, test
+  - `MockP44Server.server_bind` senza `socket.getfqdn()` (lento con DNS aziendale)
+  - Riga finale della demo con decimali a virgola (`66,7%`), come il report
+  - `tests/test_rete_locale.py` (+5): loopback, mock raggiungibile con HTTP(S)_PROXY morto, controprova, avvio rapido
+  - `scripts/collaudo.ps1` (PS 5.1, no admin): ambiente, test, demo vs KPI attesi, prova CLI su porta 8044 (mock reale
+    + 2 cicli + report) → `output\collaudo\<ts>\esito.md`. Logica CLI simulata in bash nella VM (OK); lo script
+    PowerShell NON è stato eseguito (niente pwsh nella VM)
+  - `docs/collaudo.md`: procedura, errori tipici, domande R1-R8 per il referente FM Italy, scaletta 8.1-8.6
+- 84 test verdi con Python 3.12.15 (uv, VM Linux, anche con `-W error::DeprecationWarning`) e 3.10
 
 ## Prossimi passi
-1. #8 Collaudo sul PC di Francesco (Python 3.12 Windows): test + demo, revisione del report con il referente FM Italy
+1. #8 Francesco: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\collaudo.ps1` sul PC Windows, poi inviare
+   `esito.md` (e i log se KO). Quindi revisione report con FM Italy (domande R1-R8 in `docs/collaudo.md`)
 2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
    verificare che il formato di ULTIMO_VIAGGIO coincida con quello del generatore (`AAAA-MM-GG hh:mm:ss`)
-3. Verificare sul PC Windows (Python 3.12): i test sono stati eseguiti con Python 3.10 nella VM Linux (incluso nel #8)
 
 ## Convenzioni
 - Python 3.12, solo libreria standard. Commenti in italiano

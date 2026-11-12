@@ -15,6 +15,7 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
+from src.onboarding.p44_client import apri
 from src.p44_mock.scenari import SCENARI, esito_per_tentativo, scenario_predefinito
 from src.p44_mock.server import MockP44Server
 from src.p44_mock.store import Store, parse
@@ -62,7 +63,7 @@ class MockTestBase(unittest.TestCase):
             h.setdefault("Content-Type", "application/json")
         req = urllib.request.Request(self.base + path, data=dati, headers=h, method=metodo)
         try:
-            with urllib.request.urlopen(req, timeout=5) as r:
+            with apri(req, 5) as r:
                 return r.status, json.loads(r.read() or b"null")
         except urllib.error.HTTPError as e:
             return e.code, json.loads(e.read() or b"null")
@@ -202,7 +203,7 @@ class TestInviti(MockTestBase):
         req = urllib.request.Request(self.base + "/services/invitation/v1/invitations", data=b"{x",
                                      headers={**self.auth(), "Content-Type": "application/json"}, method="POST")
         with self.assertRaises(urllib.error.HTTPError) as cm:
-            urllib.request.urlopen(req, timeout=5)
+            apri(req, 5)
         self.assertEqual(cm.exception.code, 400)
 
     def test_duplicato_in_corso_409(self):

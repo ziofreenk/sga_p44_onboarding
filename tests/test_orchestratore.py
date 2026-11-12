@@ -18,7 +18,7 @@ from datetime import date
 from src.onboarding import genera_dati_fittizi as gen
 from src.onboarding import tracciato
 from src.onboarding.orchestratore import ErroreSistemico, Orchestratore, invitee_da_riga, leggi_vettori
-from src.onboarding.p44_client import ClientP44, OrologioMock
+from src.onboarding.p44_client import ClientP44, OrologioMock, apri
 from src.onboarding.registro import Registro
 from src.p44_mock.server import MockP44Server
 from src.p44_mock.store import Store
@@ -60,7 +60,7 @@ class BaseOrchestratore(unittest.TestCase):
     def _sim(self, path, corpo):
         req = urllib.request.Request(self.base + path, json.dumps(corpo).encode(),
                                      {"Content-Type": "application/json"}, method="POST")
-        with urllib.request.urlopen(req, timeout=5) as r:
+        with apri(req, 5) as r:
             return json.loads(r.read())
 
     def avanza(self, giorni):

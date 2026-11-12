@@ -27,9 +27,9 @@ from datetime import date, datetime, timedelta, timezone
 
 from . import genera_dati_fittizi as gen
 from .orchestratore import ErroreSistemico, Orchestratore
-from .p44_client import ClientP44, OrologioMock
+from .p44_client import ClientP44, OrologioMock, apri
 from .registro import Registro
-from .report_kpi import genera_report
+from .report_kpi import _fmt_valore, genera_report
 from ..p44_mock.server import MockP44Server
 from ..p44_mock.store import Store
 
@@ -40,7 +40,7 @@ ORA_CICLO = "07:00:00"   # ora virtuale (UTC) del job giornaliero
 def _sim(base: str, path: str, corpo: dict) -> dict:
     req = urllib.request.Request(base + path, json.dumps(corpo).encode(),
                                  {"Content-Type": "application/json"}, method="POST")
-    with urllib.request.urlopen(req, timeout=10) as r:
+    with apri(req, 10) as r:
         return json.loads(r.read())
 
 
@@ -128,7 +128,7 @@ def main(argv=None):
     k = {x["kpi"]: x for x in r["kpi"]}
     f = r["funnel"]
     print(f"\nRisultato dopo {a.giorni} giorni: invitati {r['invitati']}, accettati {f['ACCETTATI']} "
-          f"({k['Tasso di accettazione']['valore']}%), rifiutati {f['RIFIUTATI']}, "
+          f"({_fmt_valore(k['Tasso di accettazione'])}), rifiutati {f['RIFIUTATI']}, "
           f"tentativi esauriti {f['TENTATIVI_ESAURITI']}, in corso {f['IN_CORSO']}, anomalie {len(r['anomalie'])}")
     print(f"Report: {r['file']['report_kpi.md']}")
     return 2 if r["interrotto"] else 0
