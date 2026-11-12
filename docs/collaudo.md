@@ -76,14 +76,25 @@ Domande da chiudere (ogni risposta va nel Registro decisioni su Notion):
 | # | Attività | Responsabile | Inizio | Fine | Durata | Dipendenze | Stato | Note |
 |---|---|---|---|---|---|---|---|---|
 | 8.1 | Correzioni preventive Windows + script di collaudo | Claude (PM/Dev) | 12/11/2026 | 12/11/2026 | 0,5 g | #7 | Completata | proxy, getfqdn, `scripts\collaudo.ps1` |
-| 8.2 | Esecuzione `collaudo.ps1` sul PC Windows | Francesco | 13/11/2026 | 13/11/2026 | 0,5 g | 8.1 | Da fare | inviare `esito.md` + log se KO |
-| 8.3 | Analisi esiti e correzioni | Claude (PM/Dev) | 13/11/2026 | 14/11/2026 | 0,5 g | 8.2 | Da fare | solo se 8.2 KO |
+| 8.2 | Esecuzione `collaudo.ps1` sul PC Windows | Francesco | 12/11/2026 | 12/11/2026 | 0,5 g | 8.1 | Completata | SUPERATO: Python 3.12.10, 84 test OK, demo e CLI OK |
+| 8.3 | Analisi esiti e correzioni | Claude (PM/Dev) | 12/11/2026 | 12/11/2026 | - | 8.2 | Completata | nessuna correzione necessaria |
 | 8.4 | Individuazione referente FM Italy | Francesco | 13/11/2026 | 18/11/2026 | - | - | Da fare | prerequisito di 8.5 |
 | 8.5 | Revisione report e domande R1-R8 | Francesco + Referente FM Italy | 18/11/2026 | 20/11/2026 | 1 g | 8.2, 8.4 | Da fare | risposte nel Registro decisioni |
 | 8.6 | Recepimento modifiche richieste | Claude (PM/Dev) | 20/11/2026 | 24/11/2026 | 1-2 g | 8.5 | Da fare | **M5** collaudo chiuso |
 
 Rischi: referente FM Italy non ancora individuato (8.4 blocca 8.5); policy aziendali su PowerShell/antivirus
 (mitigazione: comandi Python manuali sotto).
+
+## Esito esecuzione 8.2 (12/11/2026 09:45)
+| Passo | Esito | Dettaglio |
+|---|---|---|
+| Ambiente | OK | LAPMI057, Windows 11, Python 3.12.10, SQLite 3.49.1, PowerShell 5.1 |
+| Test unittest | OK | 84 test in 107 s |
+| Demo 95 giorni | OK | 62 s, KPI come attesi |
+| Prova CLI porta 8044 | OK | 30 mail di invito, 20 solleciti, report creato |
+
+Nota: urllib sul PC non vede alcun proxy di sistema, quindi il bypass del proxy per il mock non è stato esercitato
+dal vivo (resta coperto da `tests/test_rete_locale.py`).
 
 ## Criteri di accettazione (definizione di "fatto")
 - `esito.md` SUPERATO sul PC Windows con Python 3.12 (4 passi OK)

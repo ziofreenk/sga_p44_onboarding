@@ -61,10 +61,14 @@ Ultimo aggiornamento: 2026-11-12, sessione 6
     PowerShell NON è stato eseguito (niente pwsh nella VM)
   - `docs/collaudo.md`: procedura, errori tipici, domande R1-R8 per il referente FM Italy, scaletta 8.1-8.6
 - 84 test verdi con Python 3.12.15 (uv, VM Linux, anche con `-W error::DeprecationWarning`) e 3.10
+- **Collaudo Windows SUPERATO (12/11/2026 09:45, commit a4fadc1)**: PC LAPMI057, Windows 11, Python 3.12.10, SQLite 3.49.1,
+  PowerShell 5.1. Test 84 OK (107 s), demo 95 gg OK con KPI attesi (62 s), prova CLI porta 8044 OK (30 inviti, 20 solleciti).
+  Proxy di sistema visto da urllib: nessuno (`{}`), quindi la correzione proxy non è stata messa alla prova sul PC
+  (resta coperta da `tests/test_rete_locale.py`). Esito in `output\collaudo\20261112_094547\`
 
 ## Prossimi passi
-1. #8 Francesco: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\collaudo.ps1` sul PC Windows, poi inviare
-   `esito.md` (e i log se KO). Quindi revisione report con FM Italy (domande R1-R8 in `docs/collaudo.md`)
+1. #8 resto: individuare il referente FM Italy (8.4) e rivedere con lui il report demo
+   (`output\collaudo\20261112_094547\demo\report\`) con le domande R1-R8 di `docs/collaudo.md` (8.5)
 2. (facoltativo) Estrazione reale con `sga_esporta_csv` in `C:\Tools\mcp-sga\estrazioni` (dati aziendali: mai su git);
    verificare che il formato di ULTIMO_VIAGGIO coincida con quello del generatore (`AAAA-MM-GG hh:mm:ss`)
 
