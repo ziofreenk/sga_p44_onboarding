@@ -54,6 +54,6 @@ Ultimo aggiornamento: 2026-11-12, sessione 4
 - Referente Ufficio Vettori POC: Francesco Orlando, francesco.orlando@fercam.com (mittente dei solleciti)
 - Estrazione vettori: vedi decisioni "Dati SGA" su Notion (perimetro FMI 3 mesi, POC default, no P.IVA = scarto)
 - Mock: stati inviti evolvono da soli per scenario + orologio virtuale; EXPIRED dopo 30 giorni
-- Orchestratore (#6, proposte PM): max 3 tentativi di invito; DECLINED non re-invitato (gestione manuale);
+- Orchestratore (#6, approvate da Francesco il 12/11/2026): max 3 tentativi di invito; DECLINED non re-invitato (gestione manuale);
   solleciti a giorni di calendario UTC; fonte di verità degli inviti = P44 (il registro locale tiene solo solleciti,
   ultimo stato visto ed eventi)
